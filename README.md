@@ -1,5 +1,21 @@
 Portlet-Location-Tracker 
 ========================
+
+#Savoir-faire Linux Modifications
+
+A new portlet has been developped, please find below its modifications :
+* new maven portlet : locationtracker-portlet
+* dependency : liferay 6.0.5 and above
+* New features
+ * add the portlet id in the select box (will be easier to make a difference between liferay portlets and custom ones)
+ * search is done also for portlet instances (portletid having the _INSTANCE_ string in the name)
+* limitations
+ * The jasper export is not working
+ * Waiting for the developper answer, licencing has not yet been resolved
+
+
+#original readme.md file below
+
 <b>Steps for Liferay 6.1 GA 2 and Liferay 6.2 GA1</b>
 
 Portlet Location Tracker - Find out where your portlet is placed.
