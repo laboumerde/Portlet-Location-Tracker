@@ -193,7 +193,7 @@ public class LocationTrackerUtil
         ThemeDisplay themeDisplay = (ThemeDisplay) portletRequest.getAttribute(WebKeys.THEME_DISPLAY);
         List<Layout> layoutList = new ArrayList<Layout>();
         String portletId = ParamUtil.getString(portletRequest, "portletId");
-        LOGGER.error("portlet id--" + portletId);
+        LOGGER.info("portlet id--" + portletId);
         if(Validator.isNotNull(portletId)){
         Portlet portlet = LocationTrackerUtil.getPortlet(portletId);
         List<Group> groupList = LocationTrackerUtil.getCompanyGroups(themeDisplay.getCompanyId());
