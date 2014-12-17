@@ -1,7 +1,7 @@
 Portlet-Location-Tracker 
 ========================
 
-#Savoir-faire Linux Modifications
+## Savoir-faire Linux Modifications
 
 A new portlet has been developped, please find below its modifications :
 * new maven portlet : locationtracker-portlet
@@ -14,7 +14,7 @@ A new portlet has been developped, please find below its modifications :
  * Waiting for the developper answer, licencing has not yet been resolved
 
 
-#original readme.md file below
+## original readme.md file below
 
 <b>Steps for Liferay 6.1 GA 2 and Liferay 6.2 GA1</b>
 
