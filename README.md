@@ -43,7 +43,7 @@ A new portlet has been developped, please find below its modifications :
 > 
 
 
-## original readme.md file below
+## original readme.md
 
 <b>Steps for Liferay 6.1 GA 2 and Liferay 6.2 GA1</b>
 
