@@ -37,33 +37,32 @@ ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DI
 Locale locale = (Locale) themeDisplay.getLocale();
 %>
 
-<aui:form action="<%=portletFinderUrl %>" method="post" name="fm">
+<aui:form action="<%=portletFinderUrl%>" method="post" name="fm">
     <aui:layout>
-  <aui:column first="true">
-      <aui:select name="portletSelect" label="portlet-select" useNamespace="true" inlineLabel="left">
-        <aui:option><liferay-ui:message key="select-a-portlet" /></aui:option>
-        <c:if test="${fn:length(portletList) > 0}">
-            <c:forEach items="${portletList}" var="portletW">
-                <option <c:if test="${portletSelect == portletW.portlet.portletId}">selected="selected"</c:if>  value="${portletW.portlet.portletId}">
-                ${portletW.selectLabel}
-                </option>
-            </c:forEach>
-        </c:if>
-    </aui:select>
-   </aui:column>
-   <aui:column columnWidth="20" first="true">
-    <aui:button value="search" name="search"/>
-    </aui:column>
-</aui:layout>
-
+        <aui:column first="true">
+            <aui:select name="portletSelect" label="portlet-select" useNamespace="true" inlineLabel="left">
+                <aui:option><liferay-ui:message key="select-a-portlet" /></aui:option>
+                <c:if test="${fn:length(portletList) > 0}">
+                    <c:forEach items="${portletList}" var="portletW">
+                        <option <c:if test="${portletSelect == portletW.portlet.portletId}">selected="selected"</c:if>  value="${portletW.portlet.portletId}">
+                            ${portletW.selectLabel}
+                        </option>
+                    </c:forEach>
+                </c:if>
+            </aui:select>
+        </aui:column>
+        <aui:column columnWidth="20" first="true">
+            <aui:button value="search" name="search"/>
+        </aui:column>
+    </aui:layout>
 </aui:form>
 
 <aui:script>
-AUI().use('aui-base', function(A){
-	A.one("#<portlet:namespace />search").on('click',function(){
-		submitForm(document.<portlet:namespace />fm);
-	})
-});
+    AUI().use('aui-base', function(A){
+        A.one("#<portlet:namespace />search").on('click',function(){
+            submitForm(document.<portlet:namespace />fm);
+        })
+    });
 </aui:script>
 
 <liferay-ui:search-container hover="false"  searchContainer="${searchContainer}">
@@ -79,14 +78,14 @@ AUI().use('aui-base', function(A){
 			
 		</liferay-ui:search-container-column-text>
 		<liferay-ui:search-container-column-text name="friendly-url" property="friendlyURL"/>
-		<liferay-ui:search-container-column-text name="is-public-page" value='<%=(layoutObj.isPublicLayout() ? LanguageUtil.get(pageContext, "yes") : LanguageUtil.get(pageContext, "no")) %>' property="publicLayout"/>
+		<liferay-ui:search-container-column-text name="is-private-page" value='<%=(layoutObj.isPrivateLayout() ? LanguageUtil.get(pageContext, "yes") : LanguageUtil.get(pageContext, "no")) %>' property="privateLayout"/>
 		<liferay-ui:search-container-column-text name="page-url" buffer="bufferSelection">
 		<%
-			bufferSelection.append("<a target='_blank' href='");
-			bufferSelection.append(PortletFinderUtil.getPageURL(layoutObj.isPrivateLayout(), layoutObj.getFriendlyURL(), layoutObj.getGroup().getFriendlyURL(), themeDisplay));
-			bufferSelection.append("'>");
-                            bufferSelection.append(LanguageUtil.get(pageContext, "go-to-page"));
-                        bufferSelection.append("</a>");
+                    bufferSelection.append("<a target='_blank' href='");
+                    bufferSelection.append(PortletFinderUtil.getPageURL(layoutObj.isPrivateLayout(), layoutObj.getFriendlyURL(), layoutObj.getGroup().getFriendlyURL(), themeDisplay));
+                    bufferSelection.append("'>");
+                    bufferSelection.append(LanguageUtil.get(pageContext, "go-to-page"));
+                    bufferSelection.append("</a>");
 		%>
 		</liferay-ui:search-container-column-text>
 	</liferay-ui:search-container-row>
