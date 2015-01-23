@@ -14,6 +14,7 @@
  */
 --%>
 
+<%@page import="com.liferay.portal.kernel.language.LanguageUtil"%>
 <%@page import="com.savoirfairelinux.portletfinder.PortletFinderUtil"%>
 <%@page import="java.util.List"%>
 <%@page import="com.liferay.portal.kernel.util.WebKeys"%>
@@ -34,12 +35,12 @@
 <%
 ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
 Locale locale = (Locale) themeDisplay.getLocale();
-//List<Portlet> portletList = (List<Portlet>) renderRequest.getAttribute("portletList");
-//String selectedPortletId = (String) renderRequest.getAttribute("selectedPortletId");
 %>
 
 <aui:form action="<%=portletFinderUrl %>" method="post" name="fm">
-    <aui:select name="portletSelect" useNamespace="true">
+    <aui:layout>
+  <aui:column first="true">
+      <aui:select name="portletSelect" label="portlet-select" useNamespace="true" inlineLabel="left">
         <aui:option><liferay-ui:message key="select-a-portlet" /></aui:option>
         <c:if test="${fn:length(portletList) > 0}">
             <c:forEach items="${portletList}" var="portletW">
@@ -49,7 +50,11 @@ Locale locale = (Locale) themeDisplay.getLocale();
             </c:forEach>
         </c:if>
     </aui:select>
+   </aui:column>
+   <aui:column columnWidth="20" first="true">
     <aui:button value="search" name="search"/>
+    </aui:column>
+</aui:layout>
 
 </aui:form>
 
@@ -74,12 +79,14 @@ AUI().use('aui-base', function(A){
 			
 		</liferay-ui:search-container-column-text>
 		<liferay-ui:search-container-column-text name="friendly-url" property="friendlyURL"/>
-		<liferay-ui:search-container-column-text name="is-private-page" property="privateLayout"/>
+		<liferay-ui:search-container-column-text name="is-public-page" value='<%=(layoutObj.isPublicLayout() ? LanguageUtil.get(pageContext, "yes") : LanguageUtil.get(pageContext, "no")) %>' property="publicLayout"/>
 		<liferay-ui:search-container-column-text name="page-url" buffer="bufferSelection">
 		<%
 			bufferSelection.append("<a target='_blank' href='");
 			bufferSelection.append(PortletFinderUtil.getPageURL(layoutObj.isPrivateLayout(), layoutObj.getFriendlyURL(), layoutObj.getGroup().getFriendlyURL(), themeDisplay));
-			bufferSelection.append("'>Go to Page</a>");
+			bufferSelection.append("'>");
+                            bufferSelection.append(LanguageUtil.get(pageContext, "go-to-page"));
+                        bufferSelection.append("</a>");
 		%>
 		</liferay-ui:search-container-column-text>
 	</liferay-ui:search-container-row>

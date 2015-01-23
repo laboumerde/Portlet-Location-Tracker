@@ -13,6 +13,7 @@
 		<supports>
 			<mime-type>text/html</mime-type>
 		</supports>
+                <resource-bundle>content/message</resource-bundle>
 		<portlet-info>
 			<title>Portlet Finder</title>
 			<short-title>Portlet Finder</short-title>

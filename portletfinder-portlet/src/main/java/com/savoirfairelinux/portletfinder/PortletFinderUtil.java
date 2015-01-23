@@ -249,7 +249,8 @@ public class PortletFinderUtil
         return searchContainer;
 
     }
-
+	
+	
     /**
      * Get Page URL where portlet is placed
      * @param isPrivateLayout
