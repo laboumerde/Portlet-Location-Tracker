@@ -25,6 +25,7 @@
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 <%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <portlet:defineObjects />
 <portlet:renderURL var="portletFinderUrl">
@@ -33,40 +34,20 @@
 <%
 ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
 Locale locale = (Locale) themeDisplay.getLocale();
-List<Portlet> portletList = (List<Portlet>) renderRequest.getAttribute("portletList");
-String selectedPortletId = (String) renderRequest.getAttribute("selectedPortletId");
+//List<Portlet> portletList = (List<Portlet>) renderRequest.getAttribute("portletList");
+//String selectedPortletId = (String) renderRequest.getAttribute("selectedPortletId");
 %>
 
 <aui:form action="<%=portletFinderUrl %>" method="post" name="fm">
-    <aui:select name="portletSelect" useNamespace="true" >
+    <aui:select name="portletSelect" useNamespace="true">
         <aui:option><liferay-ui:message key="select-a-portlet" /></aui:option>
-        <%
-        if(portletList != null){
-            for(Portlet portlet : portletList){
-                if(selectedPortletId != null && portlet != null && selectedPortletId.equals(portlet.getPortletId())){
-                %>
-                    <aui:option selected="selected" value="<%=portlet.getPortletId()%>" >
-                    <%
-                    String portletTitleAndId = PortalUtil.getPortletTitle(portlet, application, locale); 
-                    portletTitleAndId = portletTitleAndId + " (" + portlet.getPortletId() + ")";
-                    %>
-                    <%=portletTitleAndId %>
-                    </aui:option>
-                <%
-                }else{
-                %>
-                    <aui:option value="<%=portlet.getPortletId()%>" >
-                    <%
-                    String portletTitleAndId = PortalUtil.getPortletTitle(portlet, application, locale); 
-                    portletTitleAndId = portletTitleAndId + " (" + portlet.getPortletId() + ")";
-                    %>
-                    <%=portletTitleAndId %>
-                    </aui:option>		
-                <%
-                }
-            }
-        }
-        %>
+        <c:if test="${fn:length(portletList) > 0}">
+            <c:forEach items="${portletList}" var="portletW">
+                <option <c:if test="${portletSelect == portletW.portlet.portletId}">selected="selected"</c:if>  value="${portletW.portlet.portletId}">
+                ${portletW.selectLabel}
+                </option>
+            </c:forEach>
+        </c:if>
     </aui:select>
     <aui:button value="search" name="search"/>
 

@@ -65,6 +65,16 @@ public class PortletFinderUtil
         }
         return portletList;
     }
+	
+	public static List<PortletFinderPortletWrapper> convertToWrapper(List<Portlet> portletList, Locale locale){
+		List<PortletFinderPortletWrapper> portletWrapperList = new ArrayList<PortletFinderPortletWrapper>();
+		for (Portlet portlet : portletList) {
+			PortletFinderPortletWrapper portletWrapper= new PortletFinderPortletWrapper(portlet);
+			portletWrapper.setLocale(locale);
+			portletWrapperList.add(portletWrapper);
+		}
+		return portletWrapperList;
+	}
 
     /**
      * Get Portlet based on portlet id

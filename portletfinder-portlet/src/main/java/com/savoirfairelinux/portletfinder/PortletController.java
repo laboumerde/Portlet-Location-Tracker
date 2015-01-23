@@ -25,7 +25,7 @@ public class PortletController extends MVCPortlet {
 	public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
 		Locale locale = PortalUtil.getLocale(renderRequest);
 		Long companyId = PortalUtil.getCompanyId(renderRequest);
-		renderRequest.setAttribute("portletList", PortletFinderUtil.getPortletList(companyId, locale));
+		renderRequest.setAttribute("portletList", PortletFinderUtil.convertToWrapper(PortletFinderUtil.getPortletList(companyId, locale), locale));
 		renderRequest.setAttribute("searchContainer", PortletFinderUtil.getSearchContainer(renderRequest, renderResponse));
 		String portletId = ParamUtil.getString(renderRequest, "portletSelect");
 		renderRequest.setAttribute("portletSelect", portletId);
