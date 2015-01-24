@@ -78,7 +78,7 @@ Locale locale = (Locale) themeDisplay.getLocale();
 			
 		</liferay-ui:search-container-column-text>
 		<liferay-ui:search-container-column-text name="friendly-url" property="friendlyURL"/>
-		<liferay-ui:search-container-column-text name="is-private-page" value='<%=(layoutObj.isPrivateLayout() ? LanguageUtil.get(pageContext, "yes") : LanguageUtil.get(pageContext, "no")) %>' property="privateLayout"/>
+		<liferay-ui:search-container-column-text name="is-private-page" value='<%= (layoutObj.isPrivateLayout() ? LanguageUtil.get(pageContext, "yes") : LanguageUtil.get(pageContext, "no") )%>' />
 		<liferay-ui:search-container-column-text name="page-url" buffer="bufferSelection">
 		<%
                     bufferSelection.append("<a target='_blank' href='");
