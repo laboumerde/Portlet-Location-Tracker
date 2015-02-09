@@ -1,17 +1,5 @@
 package com.savoirfairelinux.portletfinder;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
-import javax.servlet.http.HttpServletRequest;
-
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -36,6 +24,16 @@ import com.liferay.portal.service.PortletLocalServiceUtil;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.comparator.PortletTitleComparator;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletURL;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Porlet Finder utils.
@@ -309,7 +307,33 @@ public class PortletFinderUtil
         }
         return res;
     }
-
+	
+	/**
+	 * @param layout page layout
+	 * @param portletId portlet Id
+	 * @return the portlet full Ids in the page
+	 */
+	public static String getPortletInstances(Layout layout, String portletId){
+		System.out.println(portletId);
+		String res = "";
+		if (layout != null && layout.getLayoutType() instanceof LayoutTypePortlet){
+			LayoutTypePortlet layoutTypePortlet = (LayoutTypePortlet) layout.getLayoutType();
+			try {
+				List<Portlet> portlets = layoutTypePortlet.getPortlets();
+				for (Portlet portlet : portlets) {
+					if(portlet.getInstanceId() != null && getOriginalPortletId(portlet.getPortletId()).equals(portletId)){
+						if(!res.equals("")){
+							res += ", ";
+						}
+						res += portlet.getInstanceId();
+					}
+				}
+			} catch (SystemException ex) {
+				LOGGER.error(ex);
+			}
+		}
+		return res;
+	}
 
     /**
      * Instance String in the portlet name

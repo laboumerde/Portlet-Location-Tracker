@@ -35,6 +35,7 @@
 <%
 ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
 Locale locale = (Locale) themeDisplay.getLocale();
+String selPortlet = (String) request.getAttribute("portletSelect");
 %>
 
 <aui:form action="<%=portletFinderUrl%>" method="post" name="fm">
@@ -86,6 +87,11 @@ Locale locale = (Locale) themeDisplay.getLocale();
                     bufferSelection.append("'>");
                     bufferSelection.append(LanguageUtil.get(pageContext, "go-to-page"));
                     bufferSelection.append("</a>");
+		%>
+                </liferay-ui:search-container-column-text>
+                <liferay-ui:search-container-column-text name="portlet-instances" buffer="bufferSelection">
+		<%
+                    bufferSelection.append(PortletFinderUtil.getPortletInstances(layoutObj, selPortlet));
 		%>
 		</liferay-ui:search-container-column-text>
 	</liferay-ui:search-container-row>
