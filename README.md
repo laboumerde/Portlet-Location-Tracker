@@ -9,6 +9,7 @@ A new portlet has been developped, please find below its modifications :
 * New features
  * add the portlet id in the select box (will be easier to make a difference between liferay portlets and custom ones)
  * search is done also for portlet instances (portletid having the _INSTANCE_ string in the name)
+ * added portlet instance information
 * limitations
  * removed the jasper export
 
