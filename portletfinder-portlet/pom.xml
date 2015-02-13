@@ -8,8 +8,8 @@
 	<name>portletfinder-portlet Portlet</name>
 	<version>1.0</version>
 	<properties>
-		<liferay.version>6.2.0-ga1</liferay.version>
-		<liferay.maven.plugin.version>6.2.0-ga1</liferay.maven.plugin.version>
+		<liferay.version>6.2.1</liferay.version>
+		<liferay.maven.plugin.version>6.2.1</liferay.maven.plugin.version>
 	</properties>
 	<build>
 		<plugins>
