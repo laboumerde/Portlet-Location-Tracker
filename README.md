@@ -4,13 +4,13 @@ Portlet-Location-Tracker
 ## Savoir-faire Linux Modifications
 
 A new portlet has been developped, please find below its modifications :
-* new maven portlet : locationtracker-portlet
-* dependency : liferay 6.0.5 and above
+* new maven portlet : portletfinder-portlet
+* dependency : liferay 6.2.1 and above
 * New features
  * add the portlet id in the select box (will be easier to make a difference between liferay portlets and custom ones)
  * search is done also for portlet instances (portletid having the _INSTANCE_ string in the name)
 * limitations
- * The jasper export is not working
+ * removed the jasper export
 
 ## Developper authorization do modify the content
 
