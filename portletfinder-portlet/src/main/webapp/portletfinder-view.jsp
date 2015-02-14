@@ -75,8 +75,7 @@ String selPortlet = (String) request.getAttribute("portletSelect");
 		keyProperty="layoutId" modelVar="layoutObj">
 		
 		<liferay-ui:search-container-column-text name="page-name" property="name"/>
-		<liferay-ui:search-container-column-text name="group" value="<%= layoutObj.getGroup().getDescriptiveName() %>">
-			
+		<liferay-ui:search-container-column-text name="group" value="<%= layoutObj.getGroup().getDescriptiveName() %>">			
 		</liferay-ui:search-container-column-text>
 		<liferay-ui:search-container-column-text name="friendly-url" property="friendlyURL"/>
 		<liferay-ui:search-container-column-text name="is-private-page" value='<%= (layoutObj.isPrivateLayout() ? LanguageUtil.get(pageContext, "yes") : LanguageUtil.get(pageContext, "no") )%>' />
