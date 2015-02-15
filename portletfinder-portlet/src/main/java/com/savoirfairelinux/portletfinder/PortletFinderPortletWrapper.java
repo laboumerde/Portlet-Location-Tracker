@@ -10,12 +10,13 @@ import com.liferay.portal.util.PortalUtil;
 import java.util.Locale;
 
 /**
- *
- * @author etudiant
+ * Simple wrapper to use jstl in the portlet selector
+ * 
+ * @author Julien Boumard <julien.boumard@savoirfairelinux.com>
  */
 public class PortletFinderPortletWrapper {
 
-	private Portlet portlet;
+	private final Portlet portlet;
 	private Locale locale;
 
 	public PortletFinderPortletWrapper(Portlet portlet) {

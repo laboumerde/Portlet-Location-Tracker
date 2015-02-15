@@ -77,7 +77,7 @@ public class PortletFinderUtil
     /**
      * Get Portlet based on portlet id
      * @param portletId
-     * @return a Portlet instance based on the ID.
+                                 * @return a Portlet instance based on the ID.
      */
     public static Portlet getPortlet(String portletId)
     {
@@ -91,64 +91,47 @@ public class PortletFinderUtil
      * @param portletId
      * @return Returns the layouts containing the portlets
      */
-    public static List<Layout> doGetPortletLocation(List<Group> groupList, boolean privateLayout,
-            String portletId)
-            {
+    public static List<Layout> doGetPortletLocation(List<Group> groupList, boolean privateLayout, String portletId){
         List<Layout> portletDetailsList = new ArrayList<Layout>();
-
-        if (Validator.isNotNull(groupList) && !groupList.isEmpty())
-        {
-
-            for (Group group : groupList)
-            {
+        if (Validator.isNotNull(groupList) && !groupList.isEmpty()){
+            for (Group group : groupList){
                 long scopeGroupId = group.getGroupId();
                 long groupId = getGroupId(group);
                 Set<Layout> groupLayoutSet = new HashSet<Layout>();
-                try
-                {
-                    List<Layout> layouts = LayoutLocalServiceUtil.getLayouts(groupId, privateLayout,
-                            LayoutConstants.TYPE_PORTLET);
-
-                    for (Layout layout : layouts)
-                    {
+                try{
+                    List<Layout> layouts = LayoutLocalServiceUtil.getLayouts(groupId, privateLayout, LayoutConstants.TYPE_PORTLET);
+                    for (Layout layout : layouts){
                         LayoutTypePortlet layoutTypePortlet = (LayoutTypePortlet) layout.getLayoutType();
-
                         List<Portlet> layoutPortlets =  layoutTypePortlet.getAllPortlets();
-
-                        for (Portlet portlet : layoutPortlets)
-                        {                            
+                        for (Portlet portlet : layoutPortlets){                            
                             if(portletId.equals(getOriginalPortletId(portlet.getPortletId()))){
-                                if (PortalUtil.getScopeGroupId(layout, portletId) == scopeGroupId)
-                                {
+                                if (PortalUtil.getScopeGroupId(layout, portletId) == scopeGroupId){
                                     groupLayoutSet.add(layout);
                                 }
                             }
                         }
                     }
                     portletDetailsList.addAll(groupLayoutSet);
-                } catch (Exception e)
-                {
+                } catch (PortalException e){
+                    LOGGER.error(e.getMessage());
+                } catch (SystemException e){
                     LOGGER.error(e.getMessage());
                 }
             }
         }
         return portletDetailsList;
-            }
+	}
 
     /**
      * Get All Groups for Current Company
      * @param companyId
      * @return a list of the groups for current company
      */
-    public static List<Group> getCompanyGroups(long companyId)
-    {
-
+    public static List<Group> getCompanyGroups(long companyId){
         List<Group> groupList = new ArrayList<Group>();
-        try
-        {
+        try{
             groupList = GroupLocalServiceUtil.getCompanyGroups(companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-        } catch (SystemException e)
-        {
+        } catch (SystemException e){
             LOGGER.error(e.getMessage(), e);
         }
         return groupList;
@@ -161,23 +144,18 @@ public class PortletFinderUtil
      */
     public static long getGroupId(Group group)
     {
-
         long groupId = group.getGroupId();
-        try
-        {
-
-            if (group.isLayout())
-            {
+        try{
+            if (group.isLayout()){
                 Layout scopeLayout = LayoutLocalServiceUtil.getLayout(group.getClassPK());
-
                 groupId = scopeLayout.getGroupId();
             }
-        } catch (Exception e)
-        {
-            LOGGER.error(e.getMessage());
+        } catch (PortalException e){
+                    LOGGER.error(e.getMessage());
+        } catch (SystemException e){
+                    LOGGER.error(e.getMessage());
         }
         return groupId;
-
     }
 
     /**
@@ -202,7 +180,7 @@ public class PortletFinderUtil
         ThemeDisplay themeDisplay = (ThemeDisplay) portletRequest.getAttribute(WebKeys.THEME_DISPLAY);
         List<Layout> layoutList = new ArrayList<Layout>();
         String portletSelect = ParamUtil.getString(portletRequest, "portletSelect");
-        LOGGER.info("portlet id--" + portletSelect);
+        LOGGER.debug("portlet id--" + portletSelect);
         if(Validator.isNotNull(portletSelect)){
             Portlet portlet = getPortlet(portletSelect);
             List<Group> groupList = getCompanyGroups(themeDisplay.getCompanyId());
@@ -220,8 +198,6 @@ public class PortletFinderUtil
         return layoutList;
     }
 
-
-
     /**
      * Get Search Container Object
      * @param renderRequest
@@ -229,8 +205,7 @@ public class PortletFinderUtil
      * @return The search Container with the layouts containing the portlets
      */
     public static SearchContainer<Layout> getSearchContainer(RenderRequest renderRequest ,RenderResponse renderResponse){
-
-        SearchContainer<Layout> searchContainer = null;
+        SearchContainer<Layout> searchContainer;
         List<Layout> layoutList = findPortlet(renderRequest);
         PortletURL portletURL = renderResponse.createRenderURL();
         String portletId = ParamUtil.getString(renderRequest, "portletSelect");
@@ -239,15 +214,12 @@ public class PortletFinderUtil
         searchContainer = new SearchContainer<Layout>(renderRequest, null, null, SearchContainer.DEFAULT_CUR_PARAM, SearchContainer.DEFAULT_DELTA, portletURL, null, "no-locations-were-found");
 
         if (Validator.isNotNull(layoutList)) {
-            List<Layout> results = ListUtil.subList(layoutList,
-                    searchContainer.getStart(), searchContainer.getEnd());
+            List<Layout> results = ListUtil.subList(layoutList, searchContainer.getStart(), searchContainer.getEnd());
             searchContainer.setResults(results);
             searchContainer.setTotal(layoutList.size());
         }
         return searchContainer;
-
     }
-	
 	
     /**
      * Get Page URL where portlet is placed
@@ -257,23 +229,18 @@ public class PortletFinderUtil
      * @param themeDisplay
      * @return the page Url
      */
-    public static String getPageURL(boolean isPrivateLayout, String friendlyURL,String groupFriendlyURL , ThemeDisplay themeDisplay)
-    {
+    public static String getPageURL(boolean isPrivateLayout, String friendlyURL,String groupFriendlyURL , ThemeDisplay themeDisplay){
         StringBuilder sb = new StringBuilder();
-        //String portalURL = PortalUtil.getPortalURL(company.getVirtualHostname(), PortalUtil.getPortalPort(false), false);
         sb.append(themeDisplay.getPortalURL());
-        if (isPrivateLayout)
-        {
+        if (isPrivateLayout){
             sb.append(PortalUtil.getPathFriendlyURLPrivateGroup());
-        } else
-        {
+        }else{
             sb.append(PortalUtil.getPathFriendlyURLPublic());
         }
         sb.append(groupFriendlyURL);
         sb.append(friendlyURL);
         return sb.toString();
     }
-
 
     /**
      * Get the group descriptive name associated to the layout
@@ -294,7 +261,6 @@ public class PortletFinderUtil
         return groupName;
     }
 
-
     /**
      * Retrieves the original portlet ID
      * @param portletId
@@ -302,7 +268,7 @@ public class PortletFinderUtil
      */
     public static String getOriginalPortletId(String portletId){
         String res = portletId;
-        if(portletId.indexOf(INSTANCE) != -1){
+        if(portletId.contains(INSTANCE)){
             res = StringUtil.extractFirst(portletId, INSTANCE);
         }
         return res;
@@ -314,7 +280,6 @@ public class PortletFinderUtil
 	 * @return the portlet full Ids in the page
 	 */
 	public static String getPortletInstances(Layout layout, String portletId){
-		System.out.println(portletId);
 		String res = "";
 		if (layout != null && layout.getLayoutType() instanceof LayoutTypePortlet){
 			LayoutTypePortlet layoutTypePortlet = (LayoutTypePortlet) layout.getLayoutType();

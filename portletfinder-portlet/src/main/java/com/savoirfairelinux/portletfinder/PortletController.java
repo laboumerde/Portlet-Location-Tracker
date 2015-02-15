@@ -29,7 +29,6 @@ public class PortletController extends MVCPortlet {
 		renderRequest.setAttribute("searchContainer", PortletFinderUtil.getSearchContainer(renderRequest, renderResponse));
 		String portletId = ParamUtil.getString(renderRequest, "portletSelect");
 		renderRequest.setAttribute("portletSelect", portletId);
-
 		super.doView(renderRequest, renderResponse);
 	}
 

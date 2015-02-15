@@ -33,9 +33,7 @@
 </portlet:renderURL>
 
 <%
-ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
-Locale locale = (Locale) themeDisplay.getLocale();
-String selPortlet = (String) request.getAttribute("portletSelect");
+        ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
 %>
 
 <aui:form action="<%=portletFinderUrl%>" method="post" name="fm">
@@ -67,32 +65,32 @@ String selPortlet = (String) request.getAttribute("portletSelect");
 </aui:script>
 
 <liferay-ui:search-container hover="false"  searchContainer="${searchContainer}">
-	<liferay-ui:search-container-results 
-		results="${searchContainer.results}"
-		total="${searchContainer.total}" />
-	<liferay-ui:search-container-row 
-		className="com.liferay.portal.model.Layout"
-		keyProperty="layoutId" modelVar="layoutObj">
-		
-		<liferay-ui:search-container-column-text name="page-name" property="name"/>
-		<liferay-ui:search-container-column-text name="group" value="<%= layoutObj.getGroup().getDescriptiveName() %>">			
-		</liferay-ui:search-container-column-text>
-		<liferay-ui:search-container-column-text name="friendly-url" property="friendlyURL"/>
-		<liferay-ui:search-container-column-text name="is-private-page" value='<%= (layoutObj.isPrivateLayout() ? LanguageUtil.get(pageContext, "yes") : LanguageUtil.get(pageContext, "no") )%>' />
-		<liferay-ui:search-container-column-text name="page-url" buffer="bufferSelection">
-		<%
-                    bufferSelection.append("<a target='_blank' href='");
-                    bufferSelection.append(PortletFinderUtil.getPageURL(layoutObj.isPrivateLayout(), layoutObj.getFriendlyURL(), layoutObj.getGroup().getFriendlyURL(), themeDisplay));
-                    bufferSelection.append("'>");
-                    bufferSelection.append(LanguageUtil.get(pageContext, "go-to-page"));
-                    bufferSelection.append("</a>");
-		%>
-                </liferay-ui:search-container-column-text>
-                <liferay-ui:search-container-column-text name="portlet-instances" buffer="bufferSelection">
-		<%
-                    bufferSelection.append(PortletFinderUtil.getPortletInstances(layoutObj, selPortlet));
-		%>
-		</liferay-ui:search-container-column-text>
-	</liferay-ui:search-container-row>
-	<liferay-ui:search-iterator/>
+    <liferay-ui:search-container-results 
+        results="${searchContainer.results}"
+        total="${searchContainer.total}" />
+    <liferay-ui:search-container-row 
+        className="com.liferay.portal.model.Layout"
+        keyProperty="layoutId" modelVar="layoutObj">
+
+        <liferay-ui:search-container-column-text name="page-name" property="name"/>
+        <liferay-ui:search-container-column-text name="group" value="<%= layoutObj.getGroup().getDescriptiveName()%>">			
+        </liferay-ui:search-container-column-text>
+        <liferay-ui:search-container-column-text name="friendly-url" property="friendlyURL"/>
+        <liferay-ui:search-container-column-text name="is-private-page" value='<%= (layoutObj.isPrivateLayout() ? LanguageUtil.get(pageContext, "yes") : LanguageUtil.get(pageContext, "no"))%>' />
+        <liferay-ui:search-container-column-text name="page-url" buffer="bufferSelection">
+            <%
+                bufferSelection.append("<a target='_blank' href='");
+                bufferSelection.append(PortletFinderUtil.getPageURL(layoutObj.isPrivateLayout(), layoutObj.getFriendlyURL(), layoutObj.getGroup().getFriendlyURL(), themeDisplay));
+                bufferSelection.append("'>");
+                bufferSelection.append(LanguageUtil.get(pageContext, "go-to-page"));
+                bufferSelection.append("</a>");
+            %>
+        </liferay-ui:search-container-column-text>
+        <liferay-ui:search-container-column-text name="portlet-instances" buffer="bufferSelection">
+            <%
+                bufferSelection.append(PortletFinderUtil.getPortletInstances(layoutObj, (String) request.getAttribute("portletSelect")));
+            %>
+        </liferay-ui:search-container-column-text>
+    </liferay-ui:search-container-row>
+    <liferay-ui:search-iterator/>
 </liferay-ui:search-container>
