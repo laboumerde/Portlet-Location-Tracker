@@ -281,7 +281,6 @@ public class PortletFinderUtil
 	 */
 	public static String getPortletInstances(Layout layout, String portletId){
 		StringBuilder res = new StringBuilder();
-		String separator = ", ";
 
 		if (layout != null && layout.getLayoutType() instanceof LayoutTypePortlet){
 			LayoutTypePortlet layoutTypePortlet = (LayoutTypePortlet) layout.getLayoutType();
@@ -290,7 +289,7 @@ public class PortletFinderUtil
 				for (Portlet portlet : portlets) {
 					if(portlet.getInstanceId() != null && getOriginalPortletId(portlet.getPortletId()).equals(portletId)){
 						if(!(res.length() == 0)) {
-							res.append(separator);
+							res.append(StringPool.COMMA_AND_SPACE);
 						}
 						res.append(portlet.getInstanceId());
 					}
