@@ -38,7 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Porlet Finder utils.
  * This portlet is inspired by the work of Jitendra Rajput (http://itsliferay.blogspot.com)
- * 
+ *
  * @author Julien Boumard <julien.boumard@savoirfairelinux.com>
  *
  */
@@ -63,7 +63,7 @@ public class PortletFinderUtil
         }
         return portletList;
     }
-	
+
 	public static List<PortletFinderPortletWrapper> convertToWrapper(List<Portlet> portletList, Locale locale){
 		List<PortletFinderPortletWrapper> portletWrapperList = new ArrayList<PortletFinderPortletWrapper>();
 		for (Portlet portlet : portletList) {
@@ -103,7 +103,7 @@ public class PortletFinderUtil
                     for (Layout layout : layouts){
                         LayoutTypePortlet layoutTypePortlet = (LayoutTypePortlet) layout.getLayoutType();
                         List<Portlet> layoutPortlets =  layoutTypePortlet.getAllPortlets();
-                        for (Portlet portlet : layoutPortlets){                            
+                        for (Portlet portlet : layoutPortlets){
                             if(portletId.equals(getOriginalPortletId(portlet.getPortletId()))){
                                 if (PortalUtil.getScopeGroupId(layout, portletId) == scopeGroupId){
                                     groupLayoutSet.add(layout);
@@ -220,7 +220,7 @@ public class PortletFinderUtil
         }
         return searchContainer;
     }
-	
+
     /**
      * Get Page URL where portlet is placed
      * @param isPrivateLayout
@@ -273,31 +273,34 @@ public class PortletFinderUtil
         }
         return res;
     }
-	
+
 	/**
 	 * @param layout page layout
 	 * @param portletId portlet Id
 	 * @return the portlet full Ids in the page
 	 */
 	public static String getPortletInstances(Layout layout, String portletId){
-		String res = "";
+		StringBuilder res = new StringBuilder();
+		String separator = ", ";
+
 		if (layout != null && layout.getLayoutType() instanceof LayoutTypePortlet){
 			LayoutTypePortlet layoutTypePortlet = (LayoutTypePortlet) layout.getLayoutType();
 			try {
 				List<Portlet> portlets = layoutTypePortlet.getPortlets();
 				for (Portlet portlet : portlets) {
 					if(portlet.getInstanceId() != null && getOriginalPortletId(portlet.getPortletId()).equals(portletId)){
-						if(!res.equals("")){
-							res += ", ";
+						if(!(res.length() == 0)) {
+							res.append(separator);
 						}
-						res += portlet.getInstanceId();
+						res.append(portlet.getInstanceId());
 					}
 				}
 			} catch (SystemException ex) {
 				LOGGER.error(ex);
 			}
 		}
-		return res;
+
+		return res.toString();
 	}
 
     /**
