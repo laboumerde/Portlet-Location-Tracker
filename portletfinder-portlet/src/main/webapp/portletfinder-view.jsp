@@ -14,42 +14,42 @@
  */
 --%>
 
-<%@page import="com.liferay.portal.kernel.language.LanguageUtil"%>
 <%@page import="com.savoirfairelinux.portletfinder.PortletFinderUtil"%>
-<%@page import="java.util.List"%>
-<%@page import="com.liferay.portal.kernel.util.WebKeys"%>
-<%@page import="java.util.Locale"%>
-<%@page import="com.liferay.portal.theme.ThemeDisplay"%>
-<%@page import="com.liferay.portal.model.Portlet"%>
-<%@page import="com.liferay.portal.util.PortalUtil"%>
+
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
+<%@ taglib uri="http://liferay.com/tld/theme" prefix="theme" %>
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 <%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <portlet:defineObjects />
-<portlet:renderURL var="portletFinderUrl"></portlet:renderURL>
+<theme:defineObjects />
 
-<% ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY); %>
+<portlet:renderURL var="portletFinderUrl" />
 
 <aui:form action="${portletFinderUrl}" method="post" name="fm">
     <aui:layout>
+
         <aui:column first="true">
             <aui:select name="portletSelect" label="portlet-select" useNamespace="true" inlineLabel="left">
-                <aui:option><liferay-ui:message key="select-a-portlet" /></aui:option>
+                <aui:option label="select-a-portlet" value="" />
+
                 <c:if test="${fn:length(portletList) > 0}">
                     <c:forEach items="${portletList}" var="portletW">
-                        <option ${(portletSelect == portletW.portlet.portletId) ? 'selected="selected"' : ''} value="${portletW.portlet.portletId}">
+                        <c:set var="portletSelected" value="${(portletSelect == portletW.portlet.portletId)}" />
+                        <option ${portletSelected ? 'selected="selected"' : ''} value="${portletW.portlet.portletId}">
                             ${portletW.selectLabel}
                         </option>
                     </c:forEach>
                 </c:if>
             </aui:select>
         </aui:column>
-        <aui:column columnWidth="20" first="true">
+
+        <aui:column columnWidth="20">
             <aui:button value="search" name="search"/>
         </aui:column>
+
     </aui:layout>
 </aui:form>
 
@@ -64,19 +64,34 @@
 <liferay-ui:search-container hover="false"  searchContainer="${searchContainer}">
     <liferay-ui:search-container-results results="${searchContainer.results}" total="${searchContainer.total}" />
     <liferay-ui:search-container-row className="com.liferay.portal.model.Layout" keyProperty="layoutId" modelVar="layoutObj">
+
         <liferay-ui:search-container-column-text name="page-name" property="name"/>
-        <liferay-ui:search-container-column-text name="group" value="<%= layoutObj.getGroup().getDescriptiveName()%>">			
+        <liferay-ui:search-container-column-text name="group" value="${layoutObj.getGroup().getDescriptiveName()}">			
         </liferay-ui:search-container-column-text>
         <liferay-ui:search-container-column-text name="friendly-url" property="friendlyURL"/>
-        <liferay-ui:search-container-column-text name="is-private-page" value='<%= (layoutObj.isPrivateLayout() ? LanguageUtil.get(pageContext, "yes") : LanguageUtil.get(pageContext, "no"))%>' />
+
+        <c:set var="isPrivatePageLabel">
+            <c:choose>
+                <c:when test="${layoutObj.isPrivateLayout()}">
+                    <liferay-ui:message key="yes" />
+                </c:when>
+                <c:otherwise>
+                    <liferay-ui:message key="no" />
+                </c:otherwise>
+            </c:choose>
+        </c:set>
+
+        <liferay-ui:search-container-column-text name="is-private-page" value="${isPrivatePageLabel}" />
         <liferay-ui:search-container-column-text name="page-url">
-            <a target="_blank" href="<%= PortletFinderUtil.getPageURL(layoutObj.isPrivateLayout(), layoutObj.getFriendlyURL(), layoutObj.getGroup().getFriendlyURL(), themeDisplay) %>">
-                <%= LanguageUtil.get(pageContext, "go-to-page") %>
-            </a>
+            <aui:a
+                href="<%= PortletFinderUtil.getPageURL(layoutObj.isPrivateLayout(), layoutObj.getFriendlyURL(), layoutObj.getGroup().getFriendlyURL(), themeDisplay) %>"
+                label="go-to-page" target="_blank"
+            />
         </liferay-ui:search-container-column-text>
         <liferay-ui:search-container-column-text name="portlet-instances">
             <%= PortletFinderUtil.getPortletInstances(layoutObj, (String) request.getAttribute("portletSelect")) %>
         </liferay-ui:search-container-column-text>
     </liferay-ui:search-container-row>
+
     <liferay-ui:search-iterator/>
 </liferay-ui:search-container>
