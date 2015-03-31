@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.savoirfairelinux.portletfinder;
+package com.savoirfairelinux.portletfinder.model;
 
 import com.liferay.portal.model.Portlet;
 import com.liferay.portal.util.PortalUtil;
