@@ -33,7 +33,6 @@ import java.util.Set;
 
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -67,15 +66,24 @@ public class PortletFinderUtil
         return portletList;
     }
 
-	public static List<PortletFinderPortletWrapper> convertToWrapper(List<Portlet> portletList, Locale locale){
-		List<PortletFinderPortletWrapper> portletWrapperList = new ArrayList<PortletFinderPortletWrapper>();
-		for (Portlet portlet : portletList) {
-			PortletFinderPortletWrapper portletWrapper= new PortletFinderPortletWrapper(portlet);
-			portletWrapper.setLocale(locale);
-			portletWrapperList.add(portletWrapper);
-		}
-		return portletWrapperList;
-	}
+    /**
+     * Wraps the given portlet list in wrappers that can be used in JSP
+     *
+     * @param portletList The list of portlets to wrap
+     * @param locale The locale in which the portlets will be displayed
+     * @return The wrapped portlets
+     */
+    public static List<PortletFinderPortletWrapper> convertToWrapper(List<Portlet> portletList, Locale locale) {
+        List<PortletFinderPortletWrapper> portletWrapperList = new ArrayList<PortletFinderPortletWrapper>(portletList.size());
+
+        for (Portlet portlet : portletList) {
+            String portletTitle = PortalUtil.getPortletTitle(portlet, locale);
+            PortletFinderPortletWrapper portletWrapper = new PortletFinderPortletWrapper(portlet, portletTitle);
+            portletWrapperList.add(portletWrapper);
+        }
+
+        return portletWrapperList;
+    }
 
     /**
      * Get Portlet based on portlet id
@@ -207,8 +215,8 @@ public class PortletFinderUtil
      * Get Search Container Object
      *
      * @param renderRequest The portlet render request
-     * @param renderResponse The portlet render response
-     * @param portletIdParam The portlet ID request parameter name
+     * @param portletRenderURL The render URL of the portlet in which the search
+     *                         container will reside
      * @param companyId The ID of the company in which we search for the portlet
      * @param portletId The ID of the portlet we are searching for
      *
@@ -219,15 +227,12 @@ public class PortletFinderUtil
      */
     public static SearchContainer<PortletFinderLayoutWrapper> getSearchContainer(
             RenderRequest renderRequest,
-            RenderResponse renderResponse,
-            String portletIdParam,
+            PortletURL portletRenderURL,
             long companyId,
             String portletId) throws PortalException, SystemException {
 
         SearchContainer<PortletFinderLayoutWrapper> searchContainer;
         List<Layout> layoutList = findPortlet(companyId, portletId);
-        PortletURL portletURL = renderResponse.createRenderURL();
-        portletURL.setParameter(portletIdParam, portletId);
 
         searchContainer = new SearchContainer<PortletFinderLayoutWrapper>(
             renderRequest,
@@ -235,7 +240,7 @@ public class PortletFinderUtil
             null,
             SearchContainer.DEFAULT_CUR_PARAM,
             SearchContainer.DEFAULT_DELTA,
-            portletURL,
+            portletRenderURL,
             null,
             "no-locations-were-found"
         );

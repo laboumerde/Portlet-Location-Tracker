@@ -37,7 +37,7 @@
                     <c:forEach items="${portletList}" var="portletW">
                         <c:set var="portletSelected" value="${(portletSelect == portletW.portlet.portletId)}" />
                         <option ${portletSelected ? 'selected="selected"' : ''} value="${portletW.portlet.portletId}">
-                            ${portletW.selectLabel}
+                            ${portletW.title} (${portletW.portlet.portletId})
                         </option>
                     </c:forEach>
                 </c:if>

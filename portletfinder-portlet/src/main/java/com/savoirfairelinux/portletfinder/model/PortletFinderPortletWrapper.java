@@ -6,34 +6,42 @@
 package com.savoirfairelinux.portletfinder.model;
 
 import com.liferay.portal.model.Portlet;
-import com.liferay.portal.util.PortalUtil;
-import java.util.Locale;
 
 /**
- * Simple wrapper to use jstl in the portlet selector
- * 
+ * Simple wrapper to use JSTL in the portlet selector
+ *
  * @author Julien Boumard <julien.boumard@savoirfairelinux.com>
  */
 public class PortletFinderPortletWrapper {
 
 	private final Portlet portlet;
-	private Locale locale;
+	private String title;
 
-	public PortletFinderPortletWrapper(Portlet portlet) {
+	/**
+	 * Creates the portlet wrapper
+	 *
+	 * @param portlet The portlet to wrap
+	 * @param portletTitle The title of the portlet
+	 */
+	public PortletFinderPortletWrapper(Portlet portlet, String portletTitle) {
 		this.portlet = portlet;
+		this.title = portletTitle;
 	}
 
-	public void setLocale(Locale locale) {
-		this.locale = locale;
-	}
-
+	/**
+	 * Returns the wrapped portlet
+	 * @return The wrapped portlet
+	 */
 	public Portlet getPortlet() {
 		return this.portlet;
 	}
 
-	public String getSelectLabel() {
-		String portletTitle = PortalUtil.getPortletTitle(portlet, locale);
-		return (portletTitle + " (" + portlet.getPortletId() + ")");
+	/**
+	 * Returns the portlet's title
+	 * @return The portlet's title
+	 */
+	public String getTitle() {
+		return this.title;
 
 	}
 
