@@ -7,7 +7,7 @@
         <portlet-class>com.savoirfairelinux.portletfinder.PortletController</portlet-class>
         <init-param>
             <name>view-jsp</name>
-            <value>/portletfinder-view.jsp</value>
+            <value>/html/portletfinder/view.jsp</value>
         </init-param>
         <expiration-cache>0</expiration-cache>
         <supports>

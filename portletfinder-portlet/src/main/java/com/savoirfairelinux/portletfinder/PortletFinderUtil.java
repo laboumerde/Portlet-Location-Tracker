@@ -6,9 +6,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -24,15 +22,17 @@ import com.liferay.portal.service.PortletLocalServiceUtil;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.comparator.PortletTitleComparator;
+import com.savoirfairelinux.portletfinder.model.PortletFinderLayoutWrapper;
+import com.savoirfairelinux.portletfinder.model.PortletFinderPortletWrapper;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import javax.portlet.PortletRequest;
+
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -46,9 +46,11 @@ public class PortletFinderUtil
 {
     /**
      * Get All portlets for Current Company
-     * @param companyId
-     * @param locale
-     * @return All portlets based on the locale translation
+     *
+     * @param companyId The company ID in which we search the portlets
+     * @param locale The locale in which we search the portlets
+     *
+     * @return All portlets based on the locale and company
      */
     public static List<Portlet> getPortletList(long companyId , Locale locale)
     {
@@ -64,15 +66,24 @@ public class PortletFinderUtil
         return portletList;
     }
 
-	public static List<PortletFinderPortletWrapper> convertToWrapper(List<Portlet> portletList, Locale locale){
-		List<PortletFinderPortletWrapper> portletWrapperList = new ArrayList<PortletFinderPortletWrapper>();
-		for (Portlet portlet : portletList) {
-			PortletFinderPortletWrapper portletWrapper= new PortletFinderPortletWrapper(portlet);
-			portletWrapper.setLocale(locale);
-			portletWrapperList.add(portletWrapper);
-		}
-		return portletWrapperList;
-	}
+    /**
+     * Wraps the given portlet list in wrappers that can be used in JSP
+     *
+     * @param portletList The list of portlets to wrap
+     * @param locale The locale in which the portlets will be displayed
+     * @return The wrapped portlets
+     */
+    public static List<PortletFinderPortletWrapper> convertToWrapper(List<Portlet> portletList, Locale locale) {
+        List<PortletFinderPortletWrapper> portletWrapperList = new ArrayList<PortletFinderPortletWrapper>(portletList.size());
+
+        for (Portlet portlet : portletList) {
+            String portletTitle = PortalUtil.getPortletTitle(portlet, locale);
+            PortletFinderPortletWrapper portletWrapper = new PortletFinderPortletWrapper(portlet, portletTitle);
+            portletWrapperList.add(portletWrapper);
+        }
+
+        return portletWrapperList;
+    }
 
     /**
      * Get Portlet based on portlet id
@@ -172,50 +183,88 @@ public class PortletFinderUtil
 
     /**
      * Get locations for selected portlet
-     * @param portletRequest
+     *
+     * @param companyId The ID of the company in which we search for the portlet
+     * @param portletId The portlet to find's ID
+     *
      * @return The layouts containing the portlets
      */
-    public static List<Layout> findPortlet(PortletRequest portletRequest)
+    public static List<Layout> findPortlet(long companyId, String portletId)
     {
-        ThemeDisplay themeDisplay = (ThemeDisplay) portletRequest.getAttribute(WebKeys.THEME_DISPLAY);
         List<Layout> layoutList = new ArrayList<Layout>();
-        String portletSelect = ParamUtil.getString(portletRequest, "portletSelect");
-        LOGGER.debug("portlet id--" + portletSelect);
-        if(Validator.isNotNull(portletSelect)){
-            Portlet portlet = getPortlet(portletSelect);
-            List<Group> groupList = getCompanyGroups(themeDisplay.getCompanyId());
+        LOGGER.debug("Searching for portlet ID : " + portletId);
+
+        if(Validator.isNotNull(portletId)){
+            Portlet portlet = getPortlet(portletId);
+            List<Group> groupList = getCompanyGroups(companyId);
             List<Layout> publiclayoutList = doGetPortletLocation(groupList, false, portlet.getPortletId());
             List<Layout> privateLayoutList = doGetPortletLocation(groupList, true, portlet.getPortletId());
+
             if(Validator.isNotNull(publiclayoutList) && !publiclayoutList.isEmpty()){
                 layoutList.addAll(publiclayoutList);
             }
             if(Validator.isNotNull(privateLayoutList) && !privateLayoutList.isEmpty()){
                 layoutList.addAll(privateLayoutList);
             }
-            SessionMessages.add(portletRequest, "your-request-completed-successfully");
-
         }
+
         return layoutList;
     }
 
     /**
      * Get Search Container Object
-     * @param renderRequest
-     * @param renderResponse
+     *
+     * @param renderRequest The portlet render request
+     * @param portletRenderURL The render URL of the portlet in which the search
+     *                         container will reside
+     * @param companyId The ID of the company in which we search for the portlet
+     * @param portletId The ID of the portlet we are searching for
+     *
      * @return The search Container with the layouts containing the portlets
+     *
+     * @throws SystemException
+     * @throws PortalException
      */
-    public static SearchContainer<Layout> getSearchContainer(RenderRequest renderRequest ,RenderResponse renderResponse){
-        SearchContainer<Layout> searchContainer;
-        List<Layout> layoutList = findPortlet(renderRequest);
-        PortletURL portletURL = renderResponse.createRenderURL();
-        String portletId = ParamUtil.getString(renderRequest, "portletSelect");
-        portletURL.setParameter("portletSelect", portletId);
+    public static SearchContainer<PortletFinderLayoutWrapper> getSearchContainer(
+            RenderRequest renderRequest,
+            PortletURL portletRenderURL,
+            long companyId,
+            String portletId) throws PortalException, SystemException {
 
-        searchContainer = new SearchContainer<Layout>(renderRequest, null, null, SearchContainer.DEFAULT_CUR_PARAM, SearchContainer.DEFAULT_DELTA, portletURL, null, "no-locations-were-found");
+        SearchContainer<PortletFinderLayoutWrapper> searchContainer;
+        List<Layout> layoutList = findPortlet(companyId, portletId);
+
+        searchContainer = new SearchContainer<PortletFinderLayoutWrapper>(
+            renderRequest,
+            null,
+            null,
+            SearchContainer.DEFAULT_CUR_PARAM,
+            SearchContainer.DEFAULT_DELTA,
+            portletRenderURL,
+            null,
+            "no-locations-were-found"
+        );
 
         if (Validator.isNotNull(layoutList)) {
+            String portalURL = ((ThemeDisplay) renderRequest.getAttribute(WebKeys.THEME_DISPLAY)).getPortalURL();
             List<Layout> results = ListUtil.subList(layoutList, searchContainer.getStart(), searchContainer.getEnd());
-            searchContainer.setResults(results);
+            List<PortletFinderLayoutWrapper> wrappedResults = new ArrayList<PortletFinderLayoutWrapper>(results.size());
+
+            // Wrap all the results so they can be consumed in the JSP
+            for(Layout l : results) {
+                String pageURL = PortletFinderUtil.getPageURL(
+                    l.isPrivateLayout(),
+                    l.getFriendlyURL(),
+                    l.getGroup().getFriendlyURL(),
+                    portalURL
+                );
+
+                String portletInstances = getPortletInstances(l, portletId);
+
+                wrappedResults.add(new PortletFinderLayoutWrapper(l, pageURL, portletInstances));
+            }
+
+            searchContainer.setResults(wrappedResults);
             searchContainer.setTotal(layoutList.size());
         }
         return searchContainer;
@@ -223,15 +272,17 @@ public class PortletFinderUtil
 
     /**
      * Get Page URL where portlet is placed
+     *
      * @param isPrivateLayout
      * @param friendlyURL
      * @param groupFriendlyURL
-     * @param themeDisplay
-     * @return the page Url
+     * @param portalURL The URL of the portal
+     *
+     * @return The URL of the page where the portlet is placed
      */
-    public static String getPageURL(boolean isPrivateLayout, String friendlyURL,String groupFriendlyURL , ThemeDisplay themeDisplay){
+    private static String getPageURL(boolean isPrivateLayout, String friendlyURL,String groupFriendlyURL , String portalURL) {
         StringBuilder sb = new StringBuilder();
-        sb.append(themeDisplay.getPortalURL());
+        sb.append(portalURL);
         if (isPrivateLayout){
             sb.append(PortalUtil.getPathFriendlyURLPrivateGroup());
         }else{
@@ -279,7 +330,7 @@ public class PortletFinderUtil
 	 * @param portletId portlet Id
 	 * @return the portlet full Ids in the page
 	 */
-	public static String getPortletInstances(Layout layout, String portletId){
+	private static String getPortletInstances(Layout layout, String portletId){
 		StringBuilder res = new StringBuilder();
 
 		if (layout != null && layout.getLayoutType() instanceof LayoutTypePortlet){
