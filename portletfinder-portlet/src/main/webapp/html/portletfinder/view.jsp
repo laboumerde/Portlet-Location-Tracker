@@ -59,12 +59,13 @@
     });
 </aui:script>
 
-<liferay-ui:search-container hover="false"  searchContainer="${searchContainer}">
-    <liferay-ui:search-container-results results="${searchContainer.results}" total="${searchContainer.total}" />
+<liferay-ui:search-container hover="false" emptyResultsMessage="no-locations-were-found">
+    <liferay-ui:search-container-results results="${searchResults}" total="${searchResultsSize}" />
+
     <liferay-ui:search-container-row className="com.savoirfairelinux.portletfinder.model.PortletFinderLayoutWrapper" keyProperty="layoutId" modelVar="layoutObj">
 
         <liferay-ui:search-container-column-text name="page-name" property="layout.name"/>
-        <liferay-ui:search-container-column-text name="group" value="${layoutObj.layout.getGroup().getDescriptiveName()}" />			
+        <liferay-ui:search-container-column-text name="group" value="${layoutObj.layout.group.descriptiveName}" />			
         <liferay-ui:search-container-column-text name="friendly-url" property="layout.friendlyURL"/>
 
         <c:set var="isPrivatePageLabel">
