@@ -6,7 +6,6 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.Group;
@@ -210,7 +209,7 @@ public class PortletFinderUtil
                     portalURL
                 );
 
-                String portletInstances = getPortletInstances(l, portletId);
+                List<String> portletInstances = getPortletInstances(l, portletId);
                 wrappedResults.add(new PortletFinderLayoutWrapper(l, pageURL, portletInstances));
             }
         }
@@ -255,23 +254,20 @@ public class PortletFinderUtil
     }
 
 	/**
-	 * @param layout page layout
-	 * @param portletId portlet Id
-	 * @return the portlet full Ids in the page
+	 * @param layout Page layout
+	 * @param portletId Portlet Id
+	 * @return The portlet full Ids in the page
 	 */
-	private static String getPortletInstances(Layout layout, String portletId){
-		StringBuilder res = new StringBuilder();
+	private static List<String> getPortletInstances(Layout layout, String portletId){
+		List<String> portletInstances = new ArrayList<String>();
 
 		if (layout != null && layout.getLayoutType() instanceof LayoutTypePortlet){
 			LayoutTypePortlet layoutTypePortlet = (LayoutTypePortlet) layout.getLayoutType();
 			try {
 				List<Portlet> portlets = layoutTypePortlet.getPortlets();
 				for (Portlet portlet : portlets) {
-					if(portlet.getInstanceId() != null && getOriginalPortletId(portlet.getPortletId()).equals(portletId)){
-						if(!(res.length() == 0)) {
-							res.append(StringPool.COMMA_AND_SPACE);
-						}
-						res.append(portlet.getInstanceId());
+					if(portlet.getInstanceId() != null && getOriginalPortletId(portlet.getPortletId()).equals(portletId)) {
+					    portletInstances.add(portlet.getInstanceId());
 					}
 				}
 			} catch (SystemException ex) {
@@ -279,7 +275,7 @@ public class PortletFinderUtil
 			}
 		}
 
-		return res.toString();
+		return portletInstances;
 	}
 
     /**

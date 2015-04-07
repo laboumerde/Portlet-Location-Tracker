@@ -80,12 +80,21 @@
         </c:set>
 
         <liferay-ui:search-container-column-text name="is-private-page" value="${isPrivatePageLabel}" />
+
         <liferay-ui:search-container-column-text name="page-url">
             <aui:a href="${layoutObj.pageURL}" label="go-to-page" target="_blank" />
         </liferay-ui:search-container-column-text>
+
         <liferay-ui:search-container-column-text name="portlet-instances">
-            <c:out value="${layoutObj.portletInstances}" />
+            <c:if test="${!empty layoutObj.portletInstances}">
+            <ul>
+                <c:forEach items="${layoutObj.portletInstances}" var="instance">
+                <li>${instance}</li>
+                </c:forEach>
+            </ul>
+            </c:if>
         </liferay-ui:search-container-column-text>
+
     </liferay-ui:search-container-row>
 
     <liferay-ui:search-iterator/>
