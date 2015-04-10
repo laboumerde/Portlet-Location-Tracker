@@ -45,19 +45,11 @@
         </aui:column>
 
         <aui:column columnWidth="20">
-            <aui:button value="search" name="search"/>
+            <aui:button type="submit" value="search" name="search"/>
         </aui:column>
 
     </aui:layout>
 </aui:form>
-
-<aui:script>
-    AUI().use('aui-base', function(A){
-        A.one("#<portlet:namespace />search").on('click',function(){
-            submitForm(document.<portlet:namespace />fm);
-        })
-    });
-</aui:script>
 
 <liferay-ui:search-container hover="false" emptyResultsMessage="no-locations-were-found">
     <liferay-ui:search-container-results results="${searchResults}" total="${searchResultsSize}" />
