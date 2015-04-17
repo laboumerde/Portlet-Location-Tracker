@@ -45,26 +45,19 @@
         </aui:column>
 
         <aui:column columnWidth="20">
-            <aui:button value="search" name="search"/>
+            <aui:button type="submit" value="search" name="search"/>
         </aui:column>
 
     </aui:layout>
 </aui:form>
 
-<aui:script>
-    AUI().use('aui-base', function(A){
-        A.one("#<portlet:namespace />search").on('click',function(){
-            submitForm(document.<portlet:namespace />fm);
-        })
-    });
-</aui:script>
+<liferay-ui:search-container hover="false" emptyResultsMessage="no-locations-were-found">
+    <liferay-ui:search-container-results results="${searchResults}" total="${searchResultsSize}" />
 
-<liferay-ui:search-container hover="false"  searchContainer="${searchContainer}">
-    <liferay-ui:search-container-results results="${searchContainer.results}" total="${searchContainer.total}" />
     <liferay-ui:search-container-row className="com.savoirfairelinux.portletfinder.model.PortletFinderLayoutWrapper" keyProperty="layoutId" modelVar="layoutObj">
 
         <liferay-ui:search-container-column-text name="page-name" property="layout.name"/>
-        <liferay-ui:search-container-column-text name="group" value="${layoutObj.layout.getGroup().getDescriptiveName()}" />			
+        <liferay-ui:search-container-column-text name="group" value="${layoutObj.layout.group.descriptiveName}" />			
         <liferay-ui:search-container-column-text name="friendly-url" property="layout.friendlyURL"/>
 
         <c:set var="isPrivatePageLabel">
@@ -79,12 +72,21 @@
         </c:set>
 
         <liferay-ui:search-container-column-text name="is-private-page" value="${isPrivatePageLabel}" />
+
         <liferay-ui:search-container-column-text name="page-url">
             <aui:a href="${layoutObj.pageURL}" label="go-to-page" target="_blank" />
         </liferay-ui:search-container-column-text>
+
         <liferay-ui:search-container-column-text name="portlet-instances">
-            <c:out value="${layoutObj.portletInstances}" />
+            <c:if test="${!empty layoutObj.portletInstances}">
+            <ul>
+                <c:forEach items="${layoutObj.portletInstances}" var="instance">
+                <li>${instance}</li>
+                </c:forEach>
+            </ul>
+            </c:if>
         </liferay-ui:search-container-column-text>
+
     </liferay-ui:search-container-row>
 
     <liferay-ui:search-iterator/>

@@ -2,6 +2,8 @@ package com.savoirfairelinux.portletfinder.model;
 
 import com.liferay.portal.model.Layout;
 
+import java.util.List;
+
 
 /**
  * Wraps the portlet finder's search results so they can be used without
@@ -14,7 +16,7 @@ public class PortletFinderLayoutWrapper {
     private final Layout layout;
     private long layoutId;
     private String pageURL;
-    private String portletInstances;
+    private List<String> portletInstances;
 
     /**
      * Creates the layout wrapper
@@ -23,7 +25,7 @@ public class PortletFinderLayoutWrapper {
      * @param pageURL The URL of the page on which we can find the portlet
      * @param portletInstances The full portlet IDs that are on the page
      */
-    public PortletFinderLayoutWrapper(Layout layout, String pageURL, String portletInstances) {
+    public PortletFinderLayoutWrapper(Layout layout, String pageURL, List<String> portletInstances) {
         this.layout = layout;
         this.layoutId = layout.getLayoutId();
         this.pageURL = pageURL;
@@ -58,7 +60,7 @@ public class PortletFinderLayoutWrapper {
      * Returns the full portlet IDs that are on the page
      * @return The full portlet IDs that are on the page
      */
-    public String getPortletInstances() {
+    public List<String> getPortletInstances() {
         return this.portletInstances;
     }
 
