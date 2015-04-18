@@ -13,8 +13,7 @@
     </properties>
     
     <scm>
-        <connection>scm:git:http://gitlab.savoirfairelinux.com/julien.boumard/portlet-location-tracker.git/.git</connection>
-        <developerConnection>scm:git:http://gitlab.savoirfairelinux.com/julien.boumard/portlet-location-tracker.git/.git</developerConnection>
+        <connection>scm:git:https://gitlab.savoirfairelinux.com/julien.boumard/portlet-location-tracker.git</connection>
         <url>http://gitlab.savoirfairelinux.com/julien.boumard/portlet-location-tracker</url>
     </scm>
     
