@@ -6,11 +6,18 @@
     <artifactId>portletfinder-portlet</artifactId>
     <packaging>war</packaging>
     <name>portletfinder-portlet Portlet</name>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
     <properties>
         <liferay.version>6.2.1</liferay.version>
         <liferay.maven.plugin.version>6.2.1</liferay.maven.plugin.version>
     </properties>
+    
+    <scm>
+        <connection>scm:git:http://gitlab.savoirfairelinux.com/julien.boumard/portlet-location-tracker.git/.git</connection>
+        <developerConnection>scm:git:http://gitlab.savoirfairelinux.com/julien.boumard/portlet-location-tracker.git/.git</developerConnection>
+        <url>http://gitlab.savoirfairelinux.com/julien.boumard/portlet-location-tracker</url>
+    </scm>
+    
     <build>
         <plugins>
             <plugin>
